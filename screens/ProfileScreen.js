@@ -66,13 +66,6 @@ export default function ProfileScreen() {
     );
   };
 
-  const profileStats = [
-    { label: 'Total Items', value: '35', icon: 'list', color: '#c41e3a' },
-    { label: 'Shared Lists', value: '8', icon: 'share', color: '#4CAF50' },
-    { label: 'Friends', value: '12', icon: 'people', color: '#2196F3' },
-    { label: 'Ideas Generated', value: '24', icon: 'bulb', color: '#FF9800' },
-  ];
-
   const settingsOptions = [
     { 
       title: 'Edit Profile', 
@@ -123,34 +116,6 @@ export default function ProfileScreen() {
       color: '#607D8B'
     },
   ];
-
-  const renderStat = (item, index) => (
-    <Animated.View 
-      key={index} 
-      style={[
-        styles.statCard,
-        {
-          transform: [{
-            scale: animatedValue.interpolate({
-              inputRange: [0, 1],
-              outputRange: [1, 1.05],
-            })
-          }]
-        }
-      ]}
-    >
-      <LinearGradient
-        colors={[item.color + '20', item.color + '10']}
-        style={styles.statGradient}
-      >
-        <View style={[styles.statIconContainer, { backgroundColor: item.color + '20' }]}>
-          <Ionicons name={item.icon} size={20} color={item.color} />
-        </View>
-        <Text style={styles.statValue}>{item.value}</Text>
-        <Text style={styles.statLabel}>{item.label}</Text>
-      </LinearGradient>
-    </Animated.View>
-  );
 
   const renderSetting = (item, index) => (
     <TouchableOpacity key={index} style={styles.settingCard} onPress={item.onPress}>
@@ -273,14 +238,6 @@ export default function ProfileScreen() {
                   </TouchableOpacity>
                 </View>
               </LinearGradient>
-            </View>
-          </View>
-
-          {/* Enhanced Stats */}
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>📊 Your Activity</Text>
-            <View style={styles.statsContainer}>
-              {profileStats.map(renderStat)}
             </View>
           </View>
 
@@ -451,46 +408,6 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: 'bold',
     color: '#fff',
-  },
-  statsContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 16,
-  },
-  statCard: {
-    width: '23%',
-    borderRadius: 12,
-    overflow: 'hidden',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
-    elevation: 4,
-  },
-  statGradient: {
-    paddingVertical: 16,
-    paddingHorizontal: 8,
-    alignItems: 'center',
-    borderRadius: 12,
-  },
-  statIconContainer: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 4,
-  },
-  statValue: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#fff',
-  },
-  statLabel: {
-    fontSize: 10,
-    color: '#888',
-    marginTop: 2,
-    textTransform: 'uppercase',
   },
   settingsList: {
     gap: 12,
