@@ -672,9 +672,8 @@ const styles = StyleSheet.create({
     color: '#888',
   },
   openButton: {
-    borderRadius: 8,
+    borderRadius: 20,
     overflow: 'hidden',
-    borderRadius: 28,
     justifyContent: 'center',
     alignItems: 'center',
     elevation: 4,
@@ -682,5 +681,18 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 4,
+  },
+  openButtonGradient: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    gap: 6,
+  },
+  openButtonText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#fff',
   },
 });
