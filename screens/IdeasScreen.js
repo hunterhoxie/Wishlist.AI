@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, TextInput, Alert, Animated, Dimensions } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, TextInput, Alert, Animated, Dimensions, KeyboardAvoidingView, Platform, Keyboard, TouchableWithoutFeedback } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 
@@ -19,6 +19,7 @@ export default function IdeasScreen() {
   const [isRecording, setIsRecording] = useState(false);
   const [recordingTime, setRecordingTime] = useState(0);
   const scrollViewRef = useRef(null);
+  const textInputRef = useRef(null);
   const recordingAnimation = useRef(new Animated.Value(1)).current;
 
   // Sample AI responses for demo
@@ -90,6 +91,18 @@ export default function IdeasScreen() {
     setMessages(prev => [...prev, userMessage]);
     setMessage('');
     setIsTyping(true);
+
+    // Force keyboard dismissal with multiple methods
+    setTimeout(() => {
+      Keyboard.dismiss();
+      if (textInputRef.current) {
+        textInputRef.current.blur();
+      }
+      // Additional dismissal attempt
+      setTimeout(() => {
+        Keyboard.dismiss();
+      }, 50);
+    }, 50);
 
     // Simulate AI response
     setTimeout(() => {
@@ -183,7 +196,11 @@ export default function IdeasScreen() {
   ];
 
   return (
-    <View style={styles.container}>
+    <KeyboardAvoidingView 
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      style={styles.container}
+      keyboardVerticalOffset={Platform.OS === 'ios' ? 60 : 80}
+    >
       <LinearGradient
         colors={['#0f0f0f', '#1a1a1a', '#2d2d2d']}
         style={styles.gradient}
@@ -202,39 +219,39 @@ export default function IdeasScreen() {
         </View>
 
         {/* Chat Messages */}
-        <ScrollView
-          ref={scrollViewRef}
-          style={styles.chatContainer}
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={styles.chatContent}
-        >
-          {messages.map(renderMessage)}
-          
-          {isTyping && (
-            <View style={[styles.messageContainer, styles.aiMessage]}>
-              <LinearGradient
-                colors={['#2a1a1a', '#3a2a2a']}
-                style={styles.typingIndicator}
-              >
-                <View style={styles.typingDots}>
-                  <Animated.View style={[styles.dot, { transform: [{ scale: recordingAnimation }] }]} />
-                  <Animated.View style={[styles.dot, { transform: [{ scale: recordingAnimation }] }]} />
-                  <Animated.View style={[styles.dot, { transform: [{ scale: recordingAnimation }] }]} />
-                </View>
-              </LinearGradient>
-            </View>
-          )}
-
-          {/* Suggestions */}
-          {messages.length <= 2 && (
-            <View style={styles.suggestionsContainer}>
-              <Text style={styles.suggestionsTitle}>💡 Try asking:</Text>
-              <View style={styles.suggestionsList}>
-                {suggestions.map(renderSuggestion)}
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+          <ScrollView
+            ref={scrollViewRef}
+            style={styles.chatContainer}
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={styles.chatContent}
+          >
+            {messages.map(renderMessage)}
+            
+            {isTyping && (
+              <View style={[styles.messageContainer, styles.aiMessage]}>
+                <LinearGradient
+                  colors={['#2a1a1a', '#3a2a2a']}
+                  style={styles.messageGradient}
+                >
+                  <View style={styles.messageContent}>
+                    <Text style={styles.messageText}>🤔 Thinking...</Text>
+                  </View>
+                </LinearGradient>
               </View>
-            </View>
-          )}
-        </ScrollView>
+            )}
+
+            {/* Suggestions */}
+            {messages.length <= 2 && (
+              <View style={styles.suggestionsContainer}>
+                <Text style={styles.suggestionsTitle}>💡 Try asking:</Text>
+                <View style={styles.suggestionsList}>
+                  {suggestions.map(renderSuggestion)}
+                </View>
+              </View>
+            )}
+          </ScrollView>
+        </TouchableWithoutFeedback>
 
         {/* Recording Overlay */}
         {isRecording && (
@@ -258,15 +275,13 @@ export default function IdeasScreen() {
 
         {/* Input Area */}
         <View style={styles.inputContainer}>
-          <LinearGradient
-            colors={['#2a1a1a', '#3a2a2a']}
-            style={styles.inputGradient}
-          >
-            <View style={styles.inputRow}>
+          <View style={styles.inputWrapper}>
+            <View style={styles.inputBox}>
               <TextInput
+                ref={textInputRef}
                 style={styles.textInput}
                 placeholder="Ask me for gift ideas..."
-                placeholderTextColor="#888"
+                placeholderTextColor="#999"
                 value={message}
                 onChangeText={setMessage}
                 multiline
@@ -276,17 +291,12 @@ export default function IdeasScreen() {
               <View style={styles.inputActions}>
                 {message.trim() === '' ? (
                   <TouchableOpacity
-                    style={styles.microphoneButton}
+                    style={styles.sendButton}
                     onPressIn={startRecording}
                     onPressOut={stopRecording}
                     activeOpacity={0.7}
                   >
-                    <LinearGradient
-                      colors={['#4CAF50', '#45a049']}
-                      style={styles.microphoneGradient}
-                    >
-                      <Ionicons name="mic" size={20} color="#fff" />
-                    </LinearGradient>
+                    <Ionicons name="mic" size={20} color="#666" />
                   </TouchableOpacity>
                 ) : (
                   <TouchableOpacity
@@ -294,27 +304,15 @@ export default function IdeasScreen() {
                     onPress={sendMessage}
                     activeOpacity={0.7}
                   >
-                    <LinearGradient
-                      colors={['#c41e3a', '#a01829']}
-                      style={styles.sendGradient}
-                    >
-                      <Ionicons name="send" size={18} color="#fff" />
-                    </LinearGradient>
+                    <Ionicons name="send" size={20} color="#c41e3a" />
                   </TouchableOpacity>
                 )}
               </View>
             </View>
-            
-            <View style={styles.inputFooter}>
-              <Text style={styles.characterCount}>{message.length}/500</Text>
-              <TouchableOpacity style={styles.attachButton}>
-                <Ionicons name="attach" size={18} color="#888" />
-              </TouchableOpacity>
-            </View>
-          </LinearGradient>
+          </View>
         </View>
       </LinearGradient>
-    </View>
+    </KeyboardAvoidingView>
   );
 }
 
@@ -500,71 +498,53 @@ const styles = StyleSheet.create({
     color: '#fff',
   },
   inputContainer: {
-    paddingHorizontal: 20,
-    paddingBottom: 20,
-    paddingTop: 10,
+    paddingHorizontal: 16,
+    paddingVertical: 16,
+    paddingBottom: 35,
+    backgroundColor: '#1a1a1a',
+    borderTopWidth: 1,
+    borderTopColor: '#333',
   },
-  inputGradient: {
-    borderRadius: 16,
-    padding: 12,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
-    elevation: 8,
-  },
-  inputRow: {
+  inputWrapper: {
     flexDirection: 'row',
     alignItems: 'flex-end',
-    gap: 12,
+    marginBottom: 15,
+  },
+  inputBox: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'flex-end',
+    backgroundColor: '#333',
+    borderRadius: 24,
+    borderWidth: 1,
+    borderColor: '#555',
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    minHeight: 48,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    elevation: 6,
   },
   textInput: {
     flex: 1,
     fontSize: 16,
     color: '#fff',
-    maxHeight: 100,
-    minHeight: 40,
+    lineHeight: 20,
+    maxHeight: 120,
+    minHeight: 24,
+    textAlignVertical: 'top',
   },
   inputActions: {
-    alignItems: 'flex-end',
-  },
-  microphoneButton: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-    overflow: 'hidden',
-  },
-  microphoneGradient: {
-    width: '100%',
-    height: '100%',
-    justifyContent: 'center',
-    alignItems: 'center',
+    marginLeft: 8,
+    marginBottom: 2,
   },
   sendButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    overflow: 'hidden',
-  },
-  sendGradient: {
-    width: '100%',
-    height: '100%',
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    alignItems: 'center',
     justifyContent: 'center',
-    alignItems: 'center',
-  },
-  inputFooter: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginTop: 8,
-  },
-  characterCount: {
-    fontSize: 11,
-    color: '#888',
-    backgroundColor: '#c41e3a',
-    padding: 12,
-    borderRadius: 12,
-    justifyContent: 'center',
-    alignItems: 'center',
   },
 });

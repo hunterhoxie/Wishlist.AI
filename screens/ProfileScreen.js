@@ -117,6 +117,44 @@ export default function ProfileScreen() {
     },
   ];
 
+  const aboutOptions = [
+    { 
+      title: 'About', 
+      subtitle: 'Learn more about Wishlist.AI',
+      icon: 'information-circle-outline',
+      onPress: () => Alert.alert('About', 'Wishlist.AI v1.0.0\n\nThe perfect Christmas wishlist app for sharing gift ideas with friends and family.\n\n© 2025 Christmas Wishlist App'),
+      color: '#2196F3'
+    },
+    { 
+      title: 'Help & Support', 
+      subtitle: 'Get help and contact support',
+      icon: 'help-circle-outline',
+      onPress: () => Alert.alert('Help & Support', 'Need help? Contact us at:\n\nsupport@wishlist.ai\n\nOr visit our FAQ at:\nwww.wishlist.ai/faq'),
+      color: '#4CAF50'
+    },
+    { 
+      title: 'Privacy Policy', 
+      subtitle: 'How we protect your data',
+      icon: 'lock-closed-outline',
+      onPress: () => Alert.alert('Privacy Policy', 'We take your privacy seriously. Your data is encrypted and never shared with third parties without your consent.\n\nFull policy: www.wishlist.ai/privacy'),
+      color: '#FF9800'
+    },
+    { 
+      title: 'Terms of Service', 
+      subtitle: 'Terms and conditions',
+      icon: 'document-text-outline',
+      onPress: () => Alert.alert('Terms of Service', 'By using Wishlist.AI, you agree to our terms of service.\n\nFull terms: www.wishlist.ai/terms'),
+      color: '#9C27B0'
+    },
+    { 
+      title: 'Share App', 
+      subtitle: 'Share Wishlist.AI with friends',
+      icon: 'share-social-outline',
+      onPress: () => Alert.alert('Share App', 'Share Wishlist.AI with your friends and family!\n\nAvailable on iOS and Android.'),
+      color: '#c41e3a'
+    },
+  ];
+
   const renderSetting = (item, index) => (
     <TouchableOpacity key={index} style={styles.settingCard} onPress={item.onPress}>
       <LinearGradient
@@ -257,8 +295,16 @@ export default function ProfileScreen() {
             </View>
           </View>
 
-          {/* Logout Button */}
+          {/* About & Support */}
           <View style={styles.section}>
+            <Text style={styles.sectionTitle}>ℹ️ About & Support</Text>
+            <View style={styles.settingsList}>
+              {aboutOptions.map(renderSetting)}
+            </View>
+          </View>
+
+          {/* Logout Button */}
+          <View style={styles.logoutSection}>
             <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
               <LinearGradient
                 colors={['#dc3545', '#c82333']}
@@ -293,7 +339,7 @@ const styles = StyleSheet.create({
   },
   section: {
     paddingHorizontal: 20,
-    marginBottom: 20,
+    marginBottom: 24,
     paddingTop: 20,
   },
   sectionTitle: {
@@ -498,6 +544,13 @@ const styles = StyleSheet.create({
   notificationRight: {
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  logoutSection: {
+    paddingHorizontal: 20,
+    paddingTop: 10,
+    paddingBottom: 20,
+    borderTopWidth: 1,
+    borderTopColor: '#333',
   },
   logoutButton: {
     borderRadius: 12,
