@@ -3,14 +3,9 @@
     "name": "Wishlist AI",
     "slug": "wishlist-ai",
     "version": "1.0.0",
+    "scheme": "wishlistai",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
-    "splash": {
-      "image": "./assets/splash.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
-    },
     "assetBundlePatterns": [
       "**/*"
     ],
@@ -20,10 +15,6 @@
       "buildNumber": "1.0.0"
     },
     "android": {
-      "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#FFFFFF"
-      },
       "package": "com.wishlistai.app"
     },
     "web": {
